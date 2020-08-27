@@ -1,0 +1,24 @@
+pipeline {
+  agent any
+  stages {
+    stage(' Checkout SCM') {
+      steps {
+        git(url: 'https://github.com/zihai0814/zihai_Object.git', changelog: true, poll: false, credentialsId: 'github-id')
+      }
+    }
+    stage('Build and Push') {
+      steps {
+        sh 'docker build -f Dockerfile -t ${repo_name}/${app_name}:${build_tag} .'
+        withDockerRegistry(credentialsId: 'ecr:cn-northwest-1:d8bbfd28-3a71-4f95-86a7-7ace2641b5cf', url: 'https://849248106259.dkr.ecr.cn-northwest-1.amazonaws.com.cn') {
+          sh "docker push ${repo_name}/${app_name}:${build_tag}"
+        }
+
+      }
+    }
+  }
+  environment {
+    build_tag = 'latest'
+    repo_name = '849248106259.dkr.ecr.cn-northwest-1.amazonaws.com.cn'
+    app_name = 'devops-java-sample'
+  }
+}
