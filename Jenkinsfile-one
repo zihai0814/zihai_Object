@@ -10,7 +10,7 @@ pipeline {
       steps {
         sh 'docker build -f Dockerfile -t ${repo_name}/${app_name}:latest .'
         withDockerRegistry(credentialsId: 'ecr:cn-northwest-1:d8bbfd28-3a71-4f95-86a7-7ace2641b5cf', url: 'https://849248106259.dkr.ecr.cn-northwest-1.amazonaws.com.cn') {
-          sh "docker push ${repo_name}/${app_name}:${build_tag}"
+          sh "docker push ${repo_name}/${app_name}:latest"
         }
 
       }
